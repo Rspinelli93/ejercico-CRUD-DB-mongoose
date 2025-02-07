@@ -17,6 +17,8 @@ dbConnection();
 //--------
 
 app.use(express.json());
+app.use(express.urlencoded({ extended:true }))
+
 app.use('/create', routes);
 app.use('/id/:_id', routes);
 app.use('/markAsCompleted/:_id', routes);

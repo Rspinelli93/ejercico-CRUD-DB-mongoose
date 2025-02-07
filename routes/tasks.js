@@ -9,8 +9,13 @@ const Task = require("../models/Task.js");
 
 router.post("/create", async(req, res) => {
     try {
-        const task = await Task.create(req.body);
-        res.status(201).send(task);
+        const task = await Task.create(
+            { 
+            ...req.body, // el titulo se lo pido al usuario
+            completed : false // al crear la tarea, lo ponemos por defecto en -false-
+            }
+        );
+        res.status(201).json(task);
     } catch (error) {
         console.error(error);
         res
@@ -24,12 +29,12 @@ router.post("/create", async(req, res) => {
 router.get("/", async(req, res) => {
     try {
         const tasks = await Task.find(); //find() Finds all documents that match a query. Returns an array.
-        res.status(200).send(tasks); 
+        res.status(200).json(tasks); 
     } catch (error) {
         console.error(error);
         res
             .status(500)
-            .send({ message: "There was a problem trying get all the tasks" });
+            .json({ message: "There was a problem trying get all the tasks" });
     }
 });
 
@@ -43,13 +48,13 @@ router.get("/id/:_id", async (req, res) => {
         const task = await Task.findById(id);
 
         if (!task) {
-            return res.status(404).send({ message: "Task not found" });
+            return res.status(404).json({ message: "Task not found" });
         }
-        res.status(200).send(task);
+        res.status(200).json(task);
 
     } catch (error) {
         console.error(error);
-        res.status(500).send({ message: "There was a problem trying to get this task" });
+        res.status(500).json({ message: "There was a problem trying to get this task" });
     }
 });
 
@@ -67,13 +72,13 @@ router.put('/markAsCompleted/:_id', async (req, res) => {
         );
 
         if (!updatedTask) {
-            return res.status(404).send({ message: "Task not found" });
+            return res.status(404).json({ message: "Task not found" });
         }
-        res.status(200).send(updatedTask);
+        res.status(200).json(updatedTask);
 
     } catch (error) {
         console.error(error);
-        res.status(500).send({ message: "There was a problem trying to mark it as complete" });
+        res.status(500).json({ message: "There was a problem trying to mark it as complete" });
     }
 });
 
@@ -82,12 +87,12 @@ router.put('/markAsCompleted/:_id', async (req, res) => {
 
 router.put("/id/:_id", async (req, res) => {
     try {
-        const id = req.params._id;
-        const { title } = req.body;
+        const id = req.params._id; // i ask the user for this param
+        const { title } = req.body; //i get the title from the body
 
         // Ensure title is provided
         if (!title) {
-            return res.status(400).send({ message: "Title is required" });
+            return res.status(400).json({ message: "Title is required" });
         }
 
         // Update only the title
@@ -98,15 +103,15 @@ router.put("/id/:_id", async (req, res) => {
 
         // Check if a document was modified
         if (updatedTask.modifiedCount === 0) {
-            return res.status(404).send({ message: "Task not found or title was not changed" });
+            return res.status(404).json({ message: "Task not found or title was not changed" });
         }
 
         const task = await Task.findById(id);
-        res.status(200).send(task);
+        res.status(200).json(task);
 
     } catch (error) {
         console.error("Error updating task title:", error);
-        res.status(500).send({ message: "There was a problem trying to update the task title" });
+        res.status(500).json({ message: "There was a problem trying to update the task title" });
     }
 });
 
@@ -120,13 +125,13 @@ router.delete('/id/:_id', async (req, res) => {
         const deletedTask = await Task.deleteOne({ _id: id });
 
         if (deletedTask === 0) {
-            return res.status(404).send({ message: "Task not found" });
+            return res.status(404).json({ message: "Task not found" });
         }
-        res.status(200).send(deletedTask);
+        res.status(200).json(deletedTask);
 
     } catch (error) {
         console.error(error);
-        res.status(500).send({ message: "There was a problem trying to delete the task" });
+        res.status(500).json({ message: "There was a problem trying to delete the task" });
     }
 });
 
