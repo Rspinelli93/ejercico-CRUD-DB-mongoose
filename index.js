@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express();
 const routes = require('./routes/tasks');
+require('dotenv').config()
 const PORT = 3000;
 
 //-------
