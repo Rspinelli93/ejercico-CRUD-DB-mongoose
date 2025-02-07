@@ -55,7 +55,7 @@ router.get("/id/:_id", async (req, res) => {
 
 //* PUT /markAsCompleted/:_id: Endpoint para marcar una tarea como completada.
 
-app.put('/markAsCompleted/:_id', async (req, res) => {
+router.put('/markAsCompleted/:_id', async (req, res) => {
     try {
         const id = req.params._id;  // Extract ID from route parameters
 
@@ -78,7 +78,7 @@ app.put('/markAsCompleted/:_id', async (req, res) => {
 });
 
 
-//* PUT /id/:_id: Endpoint para actualizar una tarea y que solo se pueda cambiar el título de la tarea. Es decir, que no me deje cambiar el campo  “completed” desde este endpoint, sino solo, el título.
+//! PUT /id/:_id: Endpoint para actualizar una tarea y que solo se pueda cambiar el título de la tarea. Es decir, que no me deje cambiar el campo  “completed” desde este endpoint, sino solo, el título.
 
 router.put("/id/:_id", async (req, res) => {
     try {
@@ -112,7 +112,7 @@ router.put("/id/:_id", async (req, res) => {
 
 //* - DELETE /id/:_id: Endpoint para eliminar una tarea.
 
-app.delete('/id/:_id', async (req, res) => {
+router.delete('/id/:_id', async (req, res) => {
     try {
         const id = req.params._id;  // Extract ID from route parameters
 
