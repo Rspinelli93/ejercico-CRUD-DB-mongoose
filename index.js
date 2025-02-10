@@ -2,7 +2,7 @@
 
 const express = require('express');
 const app = express();
-const routes = require('./routes/tasks');
+const routes = require('./routes/tasksRoutes.js');
 require('dotenv').config()
 const PORT = 3000;
 
@@ -19,9 +19,7 @@ dbConnection();
 app.use(express.json());
 app.use(express.urlencoded({ extended:true }))
 
-app.use('/create', routes);
-app.use('/id/:_id', routes);
-app.use('/markAsCompleted/:_id', routes);
+app.use('/', routes);
 
 app.listen(PORT, () => {
     console.log(`Servidor en http://localhost:${PORT}`);

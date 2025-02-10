@@ -6,10 +6,11 @@ const create = async(req, res) => {
     try {
         const task = await Task.create(
             { 
-            ...req.body, // el titulo se lo pido al usuario
+            title: req.body.title, // el titulo se lo pido al usuario
             completed : false // al crear la tarea, lo ponemos por defecto en -false-
             }
         );
+        await task.save();
         res.status(201).json(task);
     } catch (error) {
         console.error(error);
@@ -78,36 +79,38 @@ const markAsCompleted = async (req, res) => {
 }
 
 //* PUT /id/:_id: Endpoint para actualizar una tarea y que solo se pueda cambiar el título de la tarea. Es decir, que no me deje cambiar el campo  “completed” desde este endpoint, sino solo, el título.
+//! Esto no funciona
 
 const changeTitle = async (req, res) => {
     try {
-        const id = req.params._id; // i ask the user for this param
-        const { title } = req.body; //i get the title from the body
-
-        // Ensure title is provided
-        if (!title) {
+        const id = req.params_id; // Ensure it's `id`, not `_id`
+        const {titleMod} = req.body.title; // get from body
+            console.log('Este es', {titleMod});
+            
+        // Validate input
+        if (!titleMod) {
             return res.status(400).json({ message: "Title is required" });
         }
 
-        // Update only the title
-        const updatedTask = await Task.updateOne(
-            { _id: id }, // Find the task by ID
-            { $set: { title } } // Only update the title field
+        // Find and update the task in a single query
+        const updatedTask = await Task.findByIdAndUpdate(
+            id,
+            { $set: { title: titleMod } }, 
+            { new: true } // Return updated task
         );
 
-        // Check if a document was modified
-        if (updatedTask.modifiedCount === 0) {
-            return res.status(404).json({ message: "Task not found or title was not changed" });
+        // Check if the task exists
+        if (!updatedTask) {
+            return res.status(404).json({ message: "Task not found" });
         }
 
-        const task = await Task.findById(id);
-        res.status(200).json(task);
-
+        res.status(200).json(updatedTask);
     } catch (error) {
         console.error("Error updating task title:", error);
-        res.status(500).json({ message: "There was a problem trying to update the task title" });
+        res.status(500).json({ message: "There was a problem updating the task title" });
     }
-}
+};
+
 
 //* - DELETE /id/:_id: Endpoint para eliminar una tarea.
 
