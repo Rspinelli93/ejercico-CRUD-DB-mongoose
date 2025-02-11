@@ -5,6 +5,8 @@ const app = express();
 const routes = require('./routes/tasksRoutes.js');
 require('dotenv').config()
 const PORT = 3000;
+const swaggerUI = require('swagger-ui-express')
+const docs = require('./docs/index')
 
 //-------
 
@@ -20,6 +22,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended:true }))
 
 app.use('/', routes);
+
+app.use('/api-docs', swaggerUI.serve,swaggerUI.setup(docs))
 
 app.listen(PORT, () => {
     console.log(`Servidor en http://localhost:${PORT}`);

@@ -79,25 +79,11 @@ const markAsCompleted = async (req, res) => {
 }
 
 //* PUT /id/:_id: Endpoint para actualizar una tarea y que solo se pueda cambiar el título de la tarea. Es decir, que no me deje cambiar el campo  “completed” desde este endpoint, sino solo, el título.
-//! Esto no funciona
 
 const changeTitle = async (req, res) => {
     try {
-        const id = req.params_id; // Ensure it's `id`, not `_id`
-        const {titleMod} = req.body.title; // get from body
-            console.log('Este es', {titleMod});
-            
-        // Validate input
-        if (!titleMod) {
-            return res.status(400).json({ message: "Title is required" });
-        }
-
-        // Find and update the task in a single query
-        const updatedTask = await Task.findByIdAndUpdate(
-            id,
-            { $set: { title: titleMod } }, 
-            { new: true } // Return updated task
-        );
+        const updatedTask = await Task.findByIdAndUpdate(req.params._id, req.body, { new: true })
+        res.send({ message: "task successfully updated", task });
 
         // Check if the task exists
         if (!updatedTask) {
